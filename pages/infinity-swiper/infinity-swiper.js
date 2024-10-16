@@ -18,23 +18,24 @@ Page({
     list: mockList(10000),
 
     /**
-     * Swiper item 列表，大小固定为 3 个，其中 dataIndex 代表真实数据 list 中的下标
+     * 用于控制 swiper 滑动动画时长
+     */
+    swiperDuration: SWIPER_DURATION,
+
+    /**
+     * 用于记录当前所在滑块的 index
+     */
+    swiperCurrent: 0,
+
+    /**
+     * Swiper item 列表，大小固定为 3 个，其中 dataIndex 代表真实
+     * 数据 list 中的下标，使用 dataIndex 时需要判断下标是否越界
      */
     swiperItems: [
       { dataIndex: 0 },
       { dataIndex: 1 },
       { dataIndex: -1 }
-    ],
-
-    /**
-     * 用于记录当前的 swiper 位置
-     */
-    swiperCurrent: 0,
-
-    /**
-     * 滑动动画时长
-     */
-    swiperDuration: SWIPER_DURATION
+    ]
   },
 
   onSwiperChange(e) {
