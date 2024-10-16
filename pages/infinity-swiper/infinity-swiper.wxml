@@ -5,12 +5,13 @@
   duration="{{swiperDuration}}"
 >
   <!-- 
-    关键点：
+    关键点: 
     注意 wx:key 的设置，此处有意设置为一个没有意义的值 "unset"。
     请不要设置为 "dataIndex"，否则会导致动画中断。
   -->
   <block wx:for="{{swiperItems}}" wx:for-item="item" wx:key="unset">
     <swiper-item>
+      <!-- 注意: 需要检查 list[item.dataIndex] 是否存在！ -->
       <view 
         wx:if="{{!!list[item.dataIndex]}}" 
         class="item {{item.dataIndex % 2 === 0 ? 'even' : 'odd'}}"

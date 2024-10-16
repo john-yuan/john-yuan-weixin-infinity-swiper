@@ -23,7 +23,7 @@ Page({
     swiperItems: [
       { dataIndex: 0 },
       { dataIndex: 1 },
-      { dataIndex: 2 }
+      { dataIndex: -1 }
     ],
 
     /**
@@ -39,30 +39,31 @@ Page({
 
   onSwiperChange(e) {
     const nextCurrent = e.detail.current
-    const prevCurrent = this.data.swiperCurrent
+    const originalCurrent = this.data.swiperCurrent
 
-    // 检测滑动方向
-    const goPrev = nextCurrent === ((prevCurrent + 3 - 1) % 3)
-    const goNext = nextCurrent === ((prevCurrent + 1) % 3)
+    // 如果 nextCurrent 等于前一个 swiper-item 的 index 则表示向左滚动
+    const goPrev = nextCurrent === (originalCurrent - 1 + 3) % 3
+    // 如果 nextCurrent 等于后一个 swiper-item 的 index 则表示向右滚动
+    const goNext = nextCurrent === (originalCurrent + 1) % 3
 
-    const prevDataIndex = this.data.swiperItems[prevCurrent].dataIndex
+    const prevDataIndex = this.data.swiperItems[originalCurrent].dataIndex
     
     // 如果是第一条数据，则禁止滑动到上一个 item
     if (prevDataIndex === 0 && goPrev) {
-      this.setData({ swiperCurrent: prevCurrent })
+      this.setData({ swiperCurrent: originalCurrent })
       return
     }
 
     // 如果是最后一条数据，则禁止滑动到下一个 item
     if ((prevDataIndex + 1) === this.data.list.length && goNext) {
-      this.setData({ swiperCurrent: prevCurrent })
+      this.setData({ swiperCurrent: originalCurrent })
       return
     }
 
     let swiperItems = this.data.swiperItems
 
     const swiperCurrent = e.detail.current
-    const prevIndex = (swiperCurrent + 3 - 1) % 3
+    const prevIndex = (swiperCurrent - 1 + 3) % 3
     const nextIndex = (swiperCurrent + 1) % 3
     const dataIndex = swiperItems[swiperCurrent].dataIndex
 
@@ -81,12 +82,17 @@ Page({
     this.setData({ swiperCurrent, swiperItems })
   },
 
-  swipeTo(target) {
-    if (typeof target !== 'number' || isNaN(target)) {
+  /**
+   * 跳转到指定的位置
+   * 
+   * @param targetIndex {number} 目标位置的下标
+   */
+  swipeTo(targetIndex) {
+    if (typeof targetIndex !== 'number' || isNaN(targetIndex)) {
       return
     }
 
-    if (target < 0 || target >= this.data.list.length) {
+    if (targetIndex < 0 || targetIndex >= this.data.list.length) {
       return
     }
 
@@ -94,20 +100,19 @@ Page({
     let current = this.data.swiperCurrent
     let dataIndex = items[current]
 
-    if (dataIndex === target) {
+    if (dataIndex === targetIndex) {
       return
     }
 
-    while (dataIndex !== target) {
-      if (dataIndex < target) {
+    while (dataIndex !== targetIndex) {
+      if (dataIndex < targetIndex) {
         current = (current + 1) % 3
         dataIndex += 1
       } else {
-        current = (current + 3 - 1) % 3
+        current = (current - 1 + 3) % 3
         dataIndex -= 1
       }
-
-      items[(current + 3 - 1) % 3] = dataIndex - 1
+      items[(current - 1 + 3) % 3] = dataIndex - 1
       items[(current + 1) % 3] = dataIndex + 1
     }
 
