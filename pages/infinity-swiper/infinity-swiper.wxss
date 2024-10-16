@@ -1,0 +1,26 @@
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+swiper {
+  height: 50vh;
+}
+
+.item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  color: #fff;
+}
+
+.even {
+  background-color: #913e06;
+}
+
+.odd {
+  background-color: #066626;
+}
