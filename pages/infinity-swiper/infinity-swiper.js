@@ -44,6 +44,7 @@ Page({
 
     // 如果 nextCurrent 等于前一个 swiper-item 的 index 则表示向左滚动
     const goPrev = nextCurrent === (originalCurrent - 1 + 3) % 3
+    
     // 如果 nextCurrent 等于后一个 swiper-item 的 index 则表示向右滚动
     const goNext = nextCurrent === (originalCurrent + 1) % 3
 
@@ -61,24 +62,17 @@ Page({
       return
     }
 
-    let swiperItems = this.data.swiperItems
-
+    const swiperItems = [...this.data.swiperItems]
     const swiperCurrent = e.detail.current
     const prevIndex = (swiperCurrent - 1 + 3) % 3
     const nextIndex = (swiperCurrent + 1) % 3
     const dataIndex = swiperItems[swiperCurrent].dataIndex
 
     // 确保 prevIndex 中的数据是 dataIndex 的上一条数据
-    if (swiperItems[prevIndex].dataIndex !== (dataIndex - 1)) {
-      swiperItems = [...swiperItems]
-      swiperItems[prevIndex] = { dataIndex: dataIndex - 1 }
-    }
+    swiperItems[prevIndex] = { dataIndex: dataIndex - 1 }
 
     // 确保 nextIndex 中的数据是 dataIndex 的下一条数据
-    if (swiperItems[nextIndex].dataIndex !== (dataIndex + 1)) {
-      swiperItems = [...swiperItems]
-      swiperItems[nextIndex] = { dataIndex: dataIndex + 1 }
-    }
+    swiperItems[nextIndex] = { dataIndex: dataIndex + 1 }
 
     this.setData({ swiperCurrent, swiperItems })
   },
