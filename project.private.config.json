@@ -3,5 +3,6 @@
   "projectname": "infinity-swiper",
   "setting": {
     "compileHotReLoad": true
-  }
+  },
+  "libVersion": "3.6.1"
 }

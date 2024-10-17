@@ -28,14 +28,10 @@ Page({
     swiperCurrent: 0,
 
     /**
-     * Swiper item 列表，大小固定为 3 个，其中 dataIndex 代表真实
-     * 数据 list 中的下标，使用 dataIndex 时需要判断下标是否越界
+     * Swiper item 列表，大小固定为 3 个，数组中的元素代表真实数据 list 中
+     * 的下标 itemIndex，使用 itemIndex 时需要判断下标是否越界
      */
-    swiperItems: [
-      { dataIndex: 0 },
-      { dataIndex: 1 },
-      { dataIndex: -1 }
-    ]
+    swiperItems: [0, 1, -1]
   },
 
   onSwiperChange(e) {
@@ -48,16 +44,16 @@ Page({
     // 如果 nextCurrent 等于后一个 swiper-item 的 index 则表示向右滚动
     const goNext = nextCurrent === (originalCurrent + 1) % 3
 
-    const prevDataIndex = this.data.swiperItems[originalCurrent].dataIndex
+    const prevItemIndex = this.data.swiperItems[originalCurrent]
     
     // 如果是第一条数据，则禁止滑动到上一个 item
-    if (prevDataIndex === 0 && goPrev) {
+    if (prevItemIndex === 0 && goPrev) {
       this.setData({ swiperCurrent: originalCurrent })
       return
     }
 
     // 如果是最后一条数据，则禁止滑动到下一个 item
-    if ((prevDataIndex + 1) === this.data.list.length && goNext) {
+    if (prevItemIndex === (this.data.list.length - 1) && goNext) {
       this.setData({ swiperCurrent: originalCurrent })
       return
     }
@@ -66,13 +62,13 @@ Page({
     const swiperCurrent = e.detail.current
     const prevIndex = (swiperCurrent - 1 + 3) % 3
     const nextIndex = (swiperCurrent + 1) % 3
-    const dataIndex = swiperItems[swiperCurrent].dataIndex
+    const itemIndex = swiperItems[swiperCurrent]
 
-    // 确保前面的 swiper-item 的数据是 dataIndex 的前一条数据
-    swiperItems[prevIndex] = { dataIndex: dataIndex - 1 }
+    // 确保前面的 swiper-item 的数据是 itemIndex 的前一条数据
+    swiperItems[prevIndex] = itemIndex - 1
 
-    // 确保后面的 siwper-item 的数据是 dataIndex 的后一条数据
-    swiperItems[nextIndex] = { dataIndex: dataIndex + 1 }
+    // 确保后面的 siwper-item 的数据是 itemIndex 的后一条数据
+    swiperItems[nextIndex] = itemIndex + 1
 
     this.setData({ swiperCurrent, swiperItems })
   },
@@ -91,31 +87,28 @@ Page({
       return
     }
 
-    let items = this.data.swiperItems.map((el) => el.dataIndex)
-    let current = this.data.swiperCurrent
-    let dataIndex = items[current]
+    let swiperItems = [...this.data.swiperItems]
+    let swiperCurrent = this.data.swiperCurrent
+    let itemIndex = swiperItems[swiperCurrent]
 
-    if (dataIndex === targetIndex) {
+    if (itemIndex === targetIndex) {
       return
     }
 
-    while (dataIndex !== targetIndex) {
-      if (dataIndex < targetIndex) {
-        current = (current + 1) % 3
-        dataIndex += 1
+    while (itemIndex !== targetIndex) {
+      if (itemIndex < targetIndex) {
+        swiperCurrent = (swiperCurrent + 1) % 3
+        itemIndex += 1
       } else {
-        current = (current - 1 + 3) % 3
-        dataIndex -= 1
+        swiperCurrent = (swiperCurrent - 1 + 3) % 3
+        itemIndex -= 1
       }
-      items[(current - 1 + 3) % 3] = dataIndex - 1
-      items[(current + 1) % 3] = dataIndex + 1
+      swiperItems[(swiperCurrent - 1 + 3) % 3] = itemIndex - 1
+      swiperItems[(swiperCurrent + 1) % 3] = itemIndex + 1
     }
 
     this.setData({ swiperDuration: 0 }, () => {
-      this.setData({
-        swiperCurrent: current,
-        swiperItems: items.map((i) => ({ dataIndex: i })),
-      }, () => {
+      this.setData({ swiperItems, swiperCurrent }, () => {
         this.setData({ swiperDuration: SWIPER_DURATION })
       })
     })
